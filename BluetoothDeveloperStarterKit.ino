@@ -6,7 +6,7 @@
  * Author: Vijay Rao
  *
  * Version History
- * V1.0: 
+ * V1.0:
  * First version
  *
  *
@@ -103,7 +103,7 @@ void setup() {
   attachInterrupt(digitalPinToInterrupt(button), beep, FALLING);
   attachInterrupt(digitalPinToInterrupt(flowSensor), count, CHANGE);
   interrupts();
-  
+
 
   digitalWrite(8, HIGH);
   digitalWrite(7, HIGH);
@@ -140,8 +140,8 @@ void setup() {
 
   char batteryLevel = 100;
   const char * batteryLevelPtr = &batteryLevel;
-  //BatteryService_BatteryLevel.setValue(batteryLevel);            
-  
+  //BatteryService_BatteryLevel.setValue(batteryLevel);
+
   Serial.begin(9600);
   //while (! Serial); // Wait until Serial is ready
   Serial.println("setup()");
@@ -153,13 +153,13 @@ void setup() {
 // add services and characteristics
   blePeripheral.addAttribute(CurrentTimeService);
   blePeripheral.addAttribute(CurrentTimeService_CurrentTime);
-  
+
   blePeripheral.addAttribute(PotsService);
   blePeripheral.addAttribute(PotsService_Pots);
-  
+
   blePeripheral.addAttribute(BatteryService);
   blePeripheral.addAttribute(BatteryService_BatteryLevel);
-  
+
   blePeripheral.addAttribute(TimePointService);
   blePeripheral.addAttribute(TimePointService_NewPoint);
 
@@ -168,10 +168,10 @@ void setup() {
   //blePeripheral.addAttribute(ValveControllerService_Start);
   //blePeripheral.addAttribute(ValveControllerService_Stop);
   //blePeripheral.addAttribute(ValveControllerService_Pause);
-   
+
   blePeripheral.setAdvertisedServiceUuid("180F");
 
-  
+
   Serial.println("attribute table constructed");
   // begin advertising
   blePeripheral.begin();
@@ -245,13 +245,15 @@ void loop() {
   // listen for BLE peripherals to connect:
   BLECentral central = blePeripheral.central();
   time_t t;
-  
+
+  Alarm.delay(0);
+
   // if a central is connected to peripheral:
   if (central) {
     Serial.print("Connected to central: ");
     Serial.println(central.address());
 
-    
+
 
     // while the central is still connected to peripheral:
     while (central.connected()) {
@@ -259,7 +261,7 @@ void loop() {
         //Serial.print("Volume : ");
         //Serial.println(volume);
 
-        
+
 
         ////////////////////
         //Time Synchronization Service
@@ -270,12 +272,12 @@ void loop() {
          delay(50);              // wait for a second
          digitalWrite(13, LOW);
          delay(50);              // wait for a second
-   
+
          Serial.println(CurrentTimeService_CurrentTime.valueLength());
          sprintf(AttributeValue,"%c",NULL);
          strncpy(AttributeValue,(char*)CurrentTimeService_CurrentTime.value(),CurrentTimeService_CurrentTime.valueLength());
          Serial.println(AttributeValue);
-         
+
          Serial.println("CurrentTimeService_CurrentTime.written()");
          Serial.print(AttributeValue[0], HEX);
          Serial.print(",");
@@ -320,7 +322,7 @@ void loop() {
          sprintf(AttributeValue,"%c",NULL);
          strncpy(AttributeValue,(char*)PotsService_Pots.value(),PotsService_Pots.valueLength());
          Serial.println(AttributeValue);
-         
+
          Serial.println("PotsService_Pots.written()");
          Serial.print(AttributeValue[0], HEX);
          Serial.println(".");
@@ -329,7 +331,7 @@ void loop() {
          delay(50);              // wait for a second
          digitalWrite(13, LOW);
          delay(50);              // wait for a second
-   
+
         }
 
         ////////////////////
@@ -341,7 +343,7 @@ void loop() {
          sprintf(AttributeValue,"%c",NULL);
          strncpy(AttributeValue,(char*)ValveControllerService_Command.value(),ValveControllerService_Command.valueLength());
          Serial.println(AttributeValue);
-         
+
          Serial.println("ValveControllerService_Command.written()");
          switch(AttributeValue[0])
          {
@@ -371,7 +373,7 @@ void loop() {
          delay(50);              // wait for a second
          digitalWrite(13, LOW);
          delay(50);              // wait for a second
-   
+
         }
 
 
@@ -384,7 +386,7 @@ void loop() {
          sprintf(AttributeValue,"%c",NULL);
          strncpy(AttributeValue,(char*)TimePointService_NewPoint.value(),TimePointService_NewPoint.valueLength());
          Serial.println(AttributeValue);
-         
+
          Serial.println("TimePointService_NewWateringTimePoint.written()");
          Serial.print(AttributeValue[0], HEX);
          Serial.print(",");
@@ -492,13 +494,13 @@ void loop() {
             break;
           }
          }
-         
-         
+
+
          digitalWrite(13, HIGH);
          delay(50);              // wait for a second
          digitalWrite(13, LOW);
          delay(50);              // wait for a second
-         
+
         }
 
 
@@ -508,11 +510,10 @@ void loop() {
         if (BatteryService_BatteryLevel.read()) {
           Serial.println("Battery Level Read");
         }
-        
+
     }
     // when the central disconnects, print it out:
     Serial.print("Disconnected from central: ");
     Serial.println(central.address());
   }
 }
-
